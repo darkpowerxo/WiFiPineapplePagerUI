@@ -63,168 +63,388 @@
             touch-action: manipulation;
         }
 
-        #pager_ui {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        #pager_ui td {
-            padding: 0;
-            margin: 0;
-        }
-        #pager_ui img {
-            display: block;
+        /* Pager Container */
+        .pager-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
         }
 
-        #loading {
-            width: 745px;
+        #pager_ui[hidden] {
+            display: none;
+        }
+
+        /* Device Frame - unified look */
+        .device-frame {
+            background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 50%, #151515 100%);
+            border-radius: 40px;
+            padding: 30px;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .pager-screen-wrapper {
+            width: 100%;
+            max-width: 520px;
+            background: #0a0a0a;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(0, 200, 100, 0.1);
+            border: 1px solid #333;
+        }
+
+        @media (max-width: 768px) {
+            .device-frame {
+                border-radius: 0;
+                padding: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .pager-screen-wrapper {
+                padding: 0;
+                margin: 0;
+                border-radius: 0;
+                max-width: 100%;
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        #pager {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        #pager_canvas {
+            display: none;
         }
 
         #pager_error {
-            width: 480px;
-            height: 222px;
+            width: 100%;
+            min-height: 222px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             font-size: large;
+            text-align: center;
+            color: #999;
+        }
+
+        #pager_error[hidden] {
+            display: none;
+        }
+
+        #loading {
+            font-size: large;
+        }
+
+        /* iPod-style Controls */
+        .ipod-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-wheel {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            background: linear-gradient(145deg, #252525, #1a1a1a);
+            border-radius: 50%;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.6),
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .wheel-segment .material-icons {
+            font-size: 40px;
+            color: #888;
+            transition: all 0.15s ease;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .wheel-segment:active .material-icons {
+            color: #00ff88;
+            transform: scale(1.2);
+        }
+
+        /* Position each segment */
+        .wheel-up {
+            clip-path: polygon(50% 0%, 70% 30%, 30% 30%);
+            top: 15px;
+        }
+
+        .wheel-right {
+            clip-path: polygon(100% 50%, 70% 30%, 70% 70%);
+            right: 15px;
+        }
+
+        .wheel-down {
+            clip-path: polygon(50% 100%, 30% 70%, 70% 70%);
+            bottom: 15px;
+        }
+
+        .wheel-left {
+            clip-path: polygon(0% 50%, 30% 30%, 30% 70%);
+            left: 15px;
+        }
+
+        /* Center select button */
+        .center-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #4ade80, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 
+                0 6px 20px rgba(34, 197, 94, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            transition: all 0.15s ease;
+            gap: 2px;
+        }
+
+        .center-button:hover {
+            background: linear-gradient(145deg, #22c55e, #16a34a);
+        }
+
+        .center-button:active {
+            transform: translate(-50%, -50%) scale(0.95);
+            box-shadow: 
+                0 3px 12px rgba(34, 197, 94, 0.6),
+                inset 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .center-button .material-icons {
+            font-size: 36px;
+            color: #fff;
+            padding-top: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .center-button:active .material-icons {
+            color: #f0f0f0;
+        }
+
+        .button-label {
+            display: none;
+        }
+
+        /* Menu button */
+        .menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 44px;
+            background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+            border: 1px solid #444;
+            border-radius: 22px;
+            color: #aaa;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            transition: all 0.15s ease;
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(145deg, #444, #333);
+            color: #ccc;
+            border-color: #555;
+        }
+
+        .menu-button:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 2px 6px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-button .material-icons {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .pager-container {
+                padding: 0;
+                gap: 0;
+            }
+
+            .control-wheel {
+                width: 200px;
+                height: 200px;
+            }
+
+            .center-button {
+                width: 85px;
+                height: 85px;
+            }
+
+            .center-button .material-icons {
+                font-size: 32px;
+            }
+
+            .wheel-segment .material-icons {
+                font-size: 36px;
+            }
+
+            .ipod-controls {
+                padding: 20px 0;
+            }
+
+            .menu-button {
+                width: 90px;
+                height: 40px;
+                font-size: 13px;
+            }
+        }
+
+        /* Menu Button */
+        .menu-toggle {
+            position: fixed;
+            left: 12px;
+            top: 12px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle[hidden] {
+            display: none;
+        }
+
+        .menu-toggle:active {
+            background: #333;
+        }
+
+        .menu-toggle .material-icons {
+            font-size: 24px;
+            padding: 0;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: fixed;
+            top: 64px;
+            left: 12px;
+            z-index: 999;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            min-width: 220px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: none;
+            overflow: hidden;
+        }
+
+        .dropdown-menu[hidden] {
+            display: none !important;
+        }
+
+        .dropdown-menu.open {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: #ccc;
+            text-decoration: none;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a:active {
+            background: #252525;
+        }
+
+        .dropdown-menu a .material-icons {
+            font-size: 20px;
+            padding: 0;
+            width: 24px;
             text-align: center;
         }
 
-        button.toggle {
-            z-index: 200;
+        .dropdown-menu a.red .material-icons { color: #e74c3c; }
+        .dropdown-menu a.green .material-icons { color: #2ecc71; }
+        .dropdown-menu a.blue .material-icons { color: #3498db; }
+        .dropdown-menu a.gray .material-icons { color: #95a5a6; }
+
+        .menu-backdrop {
             position: fixed;
-            left: 12px;
-            top: 10px;
-            background-color: #303030;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            touch-action: manipulation;
+            inset: 0;
+            z-index: 998;
+            display: none;
         }
 
-        nav {
-            width: 280px;
-            height: auto;
-            min-height: 100%;
-            background-color: #252525;
-            padding-top: 60px;
-            font-family: 'Steelfish', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-            border-right: 1px solid #404040;
-
-            &.min {
-                width: 60px;
-
-                .sidebarsub {
-                    opacity: 0;
-                    display: none;
-                }
-            }
-
-            ul {
-                list-style: none;
-                color: white;
-
-                a {
-                    display: flex;
-                    gap: 10px;
-                    padding: 12px 20px;
-                    color: white;
-                    text-decoration: none;
-                    font-size: 28px;
-                    line-height: 1.15;
-                    border-left: 4px solid transparent;
-                    transition: all 0.2s ease;
-
-                    &:hover {
-                        background-color: rgba(255,255,255,0.1);
-                    }
-
-                    .sidebarsub {
-                        transition: opacity 0.3s ease-in-out;
-                        display: block;
-                    }
-                }
-
-                /* External links - Red */
-                a.external {
-                    border-left-color: #c0392b;
-                    
-                    i.material-icons {
-                        color: #e74c3c;
-                    }
-
-                    &:hover {
-                        background-color: rgba(231, 76, 60, 0.15);
-                    }
-                }
-
-                /* Download links - Green */
-                a.download {
-                    border-left-color: #27ae60;
-                    
-                    i.material-icons {
-                        color: #2ecc71;
-                    }
-
-                    &:hover {
-                        background-color: rgba(46, 204, 113, 0.15);
-                    }
-                }
-
-                /* Action links - Blue */
-                a.action {
-                    border-left-color: #2980b9;
-                    
-                    i.material-icons {
-                        color: #3498db;
-                    }
-
-                    &:hover {
-                        background-color: rgba(52, 152, 219, 0.15);
-                    }
-                }
-
-                /* Logout - Gray/Red */
-                a.logout {
-                    border-left-color: #7f8c8d;
-                    
-                    i.material-icons {
-                        color: #95a5a6;
-                    }
-
-                    &:hover {
-                        background-color: rgba(149, 165, 166, 0.15);
-                        i.material-icons {
-                            color: #e74c3c;
-                        }
-                    }
-                }
-            }
-        }
-
-        .sidebarmini {
-            font-size: 18px;
-            padding-top: 4px;
-            line-height: 1.25;
-            color: #999;
-            opacity: 0.9;
+        .menu-backdrop.open {
+            display: block;
         }
 
         main {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-        }
-
-        @media (max-width: 768px) {
-            nav {
-                position: fixed;
-                left: -280px;
-                top: 0;
-                z-index: 100;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-            }
-
-            nav.active {
-                left: 0;
-            }
+            padding-top: 60px;
         }
 
         body.logged-in #header-image {
@@ -301,6 +521,8 @@
             border-radius: 4px;
             background: #222;
             color: white;
+            max-width: 300px;
+            width: 100%;
         }
 
         #login button {
@@ -323,15 +545,42 @@
             margin-top: 10px;
         }
 
+        #header-image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            #header-image {
+                max-width: 90%;
+                padding: 0 20px;
+            }
+
+            #login {
+                padding: 15px 20px;
+            }
+
+            #login input {
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+
+            #login button {
+                margin-left: 0;
+                margin-top: 12px;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            #login label {
+                display: block;
+                margin-bottom: 8px;
+            }
+        }
+
         /* Prevent zoom on buttons and links */
         button, a, input {
             touch-action: manipulation;
-        }
-
-        .nav-divider {
-            height: 1px;
-            background: #404040;
-            margin: 10px 20px;
         }
 
         /* Shell Overlay Styles */
@@ -516,78 +765,39 @@
     </div>
     <div id="archiveToast" role="status" aria-live="polite"></div>
 
-    <button hidden id="sidebarbutton" class="toggle" onclick="toggleSidenav()">
+    <!-- Simple Dropdown Menu -->
+    <button hidden id="menuBtn" class="menu-toggle">
         <span class="material-icons">menu</span>
     </button>
-
-    <nav hidden id="sidebarnav" class="min">
-        <div style="display: flex; flex-direction: column; flex-flow: column nowrap; height: 100%;">
-            <ul>
-                <!-- External Links - Red -->
-                <li>
-                    <a href="https://docs.hak5.org/wifi-pineapple-pager/" target="_blank" class="external">
-                        <i class="material-icons">auto_stories</i>
-                        <div class="sidebarsub">WiFi Pineapple Pager Manual
-                            <div class="sidebarmini">Opens in new tab</div>
-                        </div>
-                    </a>
-                </li>
-
-                <li><div class="nav-divider"></div></li>
-
-                <!-- Download Links - Green -->
-                <li>
-                    <a href="/api/files/zip/root/loot/handshakes" class="download">
-                        <i class="material-icons">handshake</i>
-                        <div class="sidebarsub">Download Handshakes
-                            <div class="sidebarmini">WPA/WPA2 handshakes as zip</div>
-                        </div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/api/loot/zip" class="download">
-                        <i class="material-icons">download</i>
-                        <div class="sidebarsub">Download Loot
-                            <div class="sidebarmini">Entire loot collection as zip</div>
-                        </div>
-                    </a>
-                </li>
-
-                <li><div class="nav-divider"></div></li>
-
-                <!-- Action Links - Blue -->
-                <li>
-                    <a href="#" onclick="archiveLoot(); return false;" class="action">
-                        <i class="material-icons">archive</i>
-                        <div class="sidebarsub">Archive Loot
-                            <div class="sidebarmini">Move loot to /root/loot/archive/</div>
-                        </div>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" onclick="openShell(); return false;" class="action">
-                        <i class="material-icons">terminal</i>
-                        <div class="sidebarsub">SSH Shell
-                            <div class="sidebarmini">Full-screen terminal access</div>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-
-            <div style="flex: 1;"></div>
-
-            <ul>
-                <li>
-                    <a href="#" onclick="logout(); return false;" class="logout">
-                        <i class="material-icons">logout</i>
-                        <div class="sidebarsub">Log Out</div>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    
+    <div hidden id="menuBackdrop" class="menu-backdrop"></div>
+    
+    <div hidden id="dropdownMenu" class="dropdown-menu">
+        <a href="https://docs.hak5.org/wifi-pineapple-pager/" target="_blank" class="red">
+            <span class="material-icons">auto_stories</span>
+            Manual
+        </a>
+        <a href="/api/files/zip/root/loot/handshakes" class="green">
+            <span class="material-icons">handshake</span>
+            Download Handshakes
+        </a>
+        <a href="/api/loot/zip" class="green">
+            <span class="material-icons">download</span>
+            Download Loot
+        </a>
+        <a href="#" id="archiveBtn" class="blue">
+            <span class="material-icons">archive</span>
+            Archive Loot
+        </a>
+        <a href="#" id="shellBtn" class="blue">
+            <span class="material-icons">terminal</span>
+            SSH Shell
+        </a>
+        <a href="#" id="logoutBtn" class="gray">
+            <span class="material-icons">logout</span>
+            Log Out
+        </a>
+    </div>
 
     <main>
 
@@ -603,20 +813,10 @@
         <div id="login_error"></div>
     </div>
 
-    <table hidden id="pager_ui" width="745" height="531" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td colspan="13">
-                <img src="images/virtual_pager_01.png" width="744" height="67" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="67" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" rowspan="3">
-                <img src="images/virtual_pager_02.png" width="132" height="324" alt="">
-            </td>
-            <td colspan="9">
+    <div hidden id="pager_ui" class="pager-container">
+        <div class="device-frame">
+            <!-- Screen Display -->
+            <div class="pager-screen-wrapper">
                 <img id="pager" width="480" height="222" tabindex="0">
                 <canvas id="pager_canvas" width="480" height="222" style="display:none;"></canvas>
                 <div hidden id="pager_error">
@@ -624,126 +824,39 @@
                     <br>
                     <button id="screen_retry">Reconnect</button>
                 </div>
-            </td>
-            <td colspan="2" rowspan="2">
-                <img src="images/virtual_pager_04.png" width="132" height="287" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="222" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="9">
-                <img src="images/virtual_pager_05.png" width="480" height="65" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="65" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <img src="images/virtual_pager_06.png" width="228" height="37" alt="">
-            </td>
-            <td rowspan="5">
-                <img class="pager-btn" src="images/LEFT.png" onclick="keyws && keyws.send('ArrowLeft')" role="button" width="87" height="109" alt="">
-            </td>
-            <td rowspan="6">
-                <img src="images/virtual_pager_08.png" width="7" height="176" alt="">
-            </td>
-            <td rowspan="2">
-                <img class="pager-btn" src="images/UP.png" onclick="keyws && keyws.send('ArrowUp')" role="button" width="139" height="49" alt="">
-            </td>
-            <td rowspan="6">
-                <img src="images/virtual_pager_10.png" width="9" height="176" alt="">
-            </td>
-            <td colspan="2" rowspan="5">
-                <img class="pager-btn" src="images/RIGHT.png" onclick="keyws && keyws.send('ArrowRight')" role="button" width="86" height="109" alt="">
-            </td>
-            <td rowspan="6">
-                <img src="images/virtual_pager_12.png" width="56" height="176" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="37" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="5">
-                <img src="images/virtual_pager_13.png" width="73" height="139" alt="">
-            </td>
-            <td colspan="2" rowspan="3">
-                <img class="pager-btn" src="images/B_Button.png" onclick="keyws && keyws.send('Escape')" role="button" width="115" height="44" alt="">
-            </td>
-            <td rowspan="5">
-                <img src="images/virtual_pager_15.png" width="22" height="139" alt="">
-            </td>
-            <td rowspan="3">
-                <img class="pager-btn" src="images/A_Button.png" onclick="keyws && keyws.send('Enter')" role="button" width="115" height="44" alt="">
-            </td>
-            <td rowspan="5">
-                <img src="images/virtual_pager_17.png" width="35" height="139" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="12" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <img src="images/virtual_pager_18.png" width="139" height="11" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="11" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="2">
-                <img class="pager-btn" src="images/DOWN.png" onclick="keyws && keyws.send('ArrowDown')" role="button" width="139" height="49" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="21" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" rowspan="2">
-                <img src="images/virtual_pager_20.png" width="115" height="95" alt="">
-            </td>
-            <td rowspan="2">
-                <img src="images/virtual_pager_21.png" width="115" height="95" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="28" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <img src="images/virtual_pager_22.png" width="87" height="67" alt="">
-            </td>
-            <td>
-                <img src="images/virtual_pager_23.png" width="139" height="67" alt="">
-            </td>
-            <td colspan="2">
-                <img src="images/virtual_pager_24.png" width="86" height="67" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="1" height="67" alt="">
-            </td>
-        </tr>
-        <tr>
-            <td><img src="images/spacer.gif" width="73" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="59" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="56" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="22" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="115" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="35" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="87" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="7" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="139" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="9" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="10" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="76" height="1" alt=""></td>
-            <td><img src="images/spacer.gif" width="56" height="1" alt=""></td>
-            <td></td>
-        </tr>
-    </table>
+            </div>
+
+            <!-- iPod-style Control Wheel -->
+            <div class="ipod-controls">
+                <div class="control-wheel">
+                    <!-- Circular touch areas -->
+                    <div class="wheel-segment wheel-up" data-key="ArrowUp">
+                        <span class="material-icons">keyboard_arrow_up</span>
+                    </div>
+                    <div class="wheel-segment wheel-right" data-key="ArrowRight">
+                        <span class="material-icons">keyboard_arrow_right</span>
+                    </div>
+                    <div class="wheel-segment wheel-down" data-key="ArrowDown">
+                        <span class="material-icons">keyboard_arrow_down</span>
+                    </div>
+                    <div class="wheel-segment wheel-left" data-key="ArrowLeft">
+                        <span class="material-icons">keyboard_arrow_left</span>
+                    </div>
+                    
+                    <!-- Center select button -->
+                    <div class="center-button" data-key="Enter">
+                        <span class="material-icons">check_circle</span>
+                        <div class="button-label">SELECT</div>
+                    </div>
+                </div>
+
+                <!-- Menu button below wheel -->
+                <button class="menu-button" data-key="Escape">
+                    MENU
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="loading">
         Loading virtual pager...<br>
@@ -809,36 +922,19 @@
 
     let loggedFrameInfo = false;
 
-    function toggleSidenav() {
-        const sidenav = document.querySelector("#sidebarnav");
-
-        if (window.innerWidth <= 768) {
-            sidenav.classList.remove("min");
-            sidenav.classList.toggle("active");
-            
-            // Add click-outside-to-close on mobile
-            if (sidenav.classList.contains("active")) {
-                setTimeout(() => {
-                    document.addEventListener("click", closeSidenavOnClickOutside);
-                }, 10);
-            } else {
-                document.removeEventListener("click", closeSidenavOnClickOutside);
-            }
-        } else {
-            sidenav.classList.remove("active");
-            sidenav.classList.toggle("min");
-        }
+    // Simple menu toggle
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        const backdrop = document.getElementById('menuBackdrop');
+        const isOpen = menu.classList.contains('open');
+        
+        menu.classList.toggle('open', !isOpen);
+        backdrop.classList.toggle('open', !isOpen);
     }
 
-    function closeSidenavOnClickOutside(e) {
-        const sidenav = document.querySelector("#sidebarnav");
-        const toggleBtn = document.querySelector("#sidebarbutton");
-        
-        // Check if click is outside sidebar and not on toggle button
-        if (sidenav && !sidenav.contains(e.target) && !toggleBtn.contains(e.target)) {
-            sidenav.classList.remove("active");
-            document.removeEventListener("click", closeSidenavOnClickOutside);
-        }
+    function closeMenu() {
+        document.getElementById('dropdownMenu').classList.remove('open');
+        document.getElementById('menuBackdrop').classList.remove('open');
     }
 
     function renderRGBAFrame(bytes) {
@@ -923,8 +1019,8 @@
     function check_login() {
         const xhr = new XMLHttpRequest();
         xhr.onload = () => {
-            const sidebarbutton = document.getElementById("sidebarbutton");
-            const sidebarnav = document.getElementById("sidebarnav");
+            const menuBtn = document.getElementById("menuBtn");
+            const dropdownMenu = document.getElementById("dropdownMenu");
             const loadingdiv = document.getElementById("loading");
             const logindiv = document.getElementById("login");
             const pagerdiv = document.getElementById("pager_ui");
@@ -938,10 +1034,11 @@
                 if (!login_ok) {
                     logindiv.hidden = true;
                     pagerdiv.hidden = false;
-                    sidebarbutton.hidden = false;
-                    sidebarnav.hidden = false;
+                    menuBtn.hidden = false;
+                    dropdownMenu.hidden = false;
                     document.body.classList.add("logged-in");
                     connect();
+                    initializeControls();
                     login_ok = true;
                 }
             } else {
@@ -949,8 +1046,9 @@
 
                 if (login_ok) {
                     pagerdiv.hidden = true;
-                    sidebarbutton.hidden = true;
-                    sidebarnav.hidden = true;
+                    menuBtn.hidden = true;
+                    dropdownMenu.hidden = true;
+                    closeMenu();
                     document.body.classList.remove("logged-in");
                     login_ok = false;
                     close();
@@ -1047,6 +1145,25 @@
                 }
             }
         });
+
+        // Menu setup
+        document.getElementById("menuBtn").onclick = toggleMenu;
+        document.getElementById("menuBackdrop").onclick = closeMenu;
+        document.getElementById("archiveBtn").onclick = (e) => {
+            e.preventDefault();
+            closeMenu();
+            archiveLoot();
+        };
+        document.getElementById("shellBtn").onclick = (e) => {
+            e.preventDefault();
+            closeMenu();
+            openShell();
+        };
+        document.getElementById("logoutBtn").onclick = (e) => {
+            e.preventDefault();
+            closeMenu();
+            logout();
+        };
 
         check_login();
 
@@ -1293,6 +1410,52 @@
             shellws.onclose = function () {}; // Prevent reconnect
             shellws.close();
             shellws = null;
+        }
+    }
+
+    function initializeControls() {
+        // Add event listeners for wheel segments
+        document.querySelectorAll('.wheel-segment').forEach(segment => {
+            const key = segment.dataset.key;
+            
+            segment.addEventListener('mousedown', () => {
+                if (keyws) keyws.send(key);
+            });
+            
+            segment.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (keyws) keyws.send(key);
+            });
+        });
+
+        // Add event listeners for center button
+        const centerBtn = document.querySelector('.center-button');
+        if (centerBtn) {
+            const key = centerBtn.dataset.key;
+            
+            centerBtn.addEventListener('mousedown', () => {
+                if (keyws) keyws.send(key);
+            });
+            
+            centerBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (keyws) keyws.send(key);
+            });
+        }
+
+        // Add event listener for menu button
+        const menuBtn = document.querySelector('.menu-button');
+        if (menuBtn) {
+            const key = menuBtn.dataset.key;
+            
+            menuBtn.addEventListener('mousedown', () => {
+                if (keyws) keyws.send(key);
+            });
+            
+            menuBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (keyws) keyws.send(key);
+            });
         }
     }
 </script>
