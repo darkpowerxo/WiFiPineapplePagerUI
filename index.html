@@ -3,7 +3,7 @@
 <head>
     <title>Virtual Pager</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <style>
         @font-face {
@@ -27,7 +27,7 @@
             font-family: 'Material Icons',serif;
             font-weight: normal;
             font-style: normal;
-            font-size: 24px;  /* Preferred icon size */
+            font-size: 24px;
             display: inline-block;
             line-height: 1;
             text-transform: none;
@@ -36,16 +36,9 @@
             white-space: nowrap;
             direction: ltr;
             padding-top: 7px;
-
-            /* Support for all WebKit browsers. */
             -webkit-font-smoothing: antialiased;
-            /* Support for Safari and Chrome. */
             text-rendering: optimizeLegibility;
-
-            /* Support for Firefox. */
             -moz-osx-font-smoothing: grayscale;
-
-            /* Support for IE. */
             font-feature-settings: 'liga';
         }
 
@@ -53,16 +46,21 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            touch-action: manipulation;
         }
 
         body {
             display: flex;
             min-height: 100vh;
-            /* overflow: hidden; */        /* remove this */
-            overflow-x: hidden;            /* optional: prevent horizontal scroll */
-            overflow-y: auto;              /* allow vertical scrolling */
+            overflow-x: hidden;
+            overflow-y: auto;
             color: #A0A0A0;
             background-color: #303030;
+            touch-action: manipulation;
         }
 
         #pager_ui {
@@ -77,28 +75,6 @@
             display: block;
         }
 
-        #login_error {
-
-        }
-
-        #terminal-wrapper {
-            margin-top: 20px;
-            display: block;
-            text-align: left;
-            width: 100%;
-        }
-        #terminal {
-            margin: 0 auto;
-            width: 720px;
-            height: 260px;
-            border: 1px solid #505050;
-            box-shadow: 0 0 10px rgba(0,0,0,0.7) inset;
-            text-align: left !important;
-        }
-        #terminal .xterm {
-            text-align: left !important;
-        }
-
         #loading {
             width: 745px;
         }
@@ -111,7 +87,7 @@
         }
 
         button.toggle {
-            z-index: 10;
+            z-index: 200;
             position: fixed;
             left: 12px;
             top: 10px;
@@ -120,15 +96,17 @@
             border: none;
             padding: 10px;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         nav {
-            width: 250px;
+            width: 280px;
             height: auto;
             min-height: 100%;
-            background-color: #303030;
+            background-color: #252525;
             padding-top: 60px;
             font-family: 'Steelfish', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+            border-right: 1px solid #404040;
 
             &.min {
                 width: 60px;
@@ -140,20 +118,22 @@
             }
 
             ul {
+                list-style: none;
                 color: white;
 
                 a {
                     display: flex;
                     gap: 10px;
-                    padding: 10px 20px;
+                    padding: 12px 20px;
                     color: white;
                     text-decoration: none;
-
-                    font-size: 30px;
+                    font-size: 28px;
                     line-height: 1.15;
+                    border-left: 4px solid transparent;
+                    transition: all 0.2s ease;
 
                     &:hover {
-                        background-color: gray;
+                        background-color: rgba(255,255,255,0.1);
                     }
 
                     .sidebarsub {
@@ -161,15 +141,70 @@
                         display: block;
                     }
                 }
+
+                /* External links - Red */
+                a.external {
+                    border-left-color: #c0392b;
+                    
+                    i.material-icons {
+                        color: #e74c3c;
+                    }
+
+                    &:hover {
+                        background-color: rgba(231, 76, 60, 0.15);
+                    }
+                }
+
+                /* Download links - Green */
+                a.download {
+                    border-left-color: #27ae60;
+                    
+                    i.material-icons {
+                        color: #2ecc71;
+                    }
+
+                    &:hover {
+                        background-color: rgba(46, 204, 113, 0.15);
+                    }
+                }
+
+                /* Action links - Blue */
+                a.action {
+                    border-left-color: #2980b9;
+                    
+                    i.material-icons {
+                        color: #3498db;
+                    }
+
+                    &:hover {
+                        background-color: rgba(52, 152, 219, 0.15);
+                    }
+                }
+
+                /* Logout - Gray/Red */
+                a.logout {
+                    border-left-color: #7f8c8d;
+                    
+                    i.material-icons {
+                        color: #95a5a6;
+                    }
+
+                    &:hover {
+                        background-color: rgba(149, 165, 166, 0.15);
+                        i.material-icons {
+                            color: #e74c3c;
+                        }
+                    }
+                }
             }
         }
 
         .sidebarmini {
-            font-size: 20px;
-            padding-top: 6px;
+            font-size: 18px;
+            padding-top: 4px;
             line-height: 1.25;
-            color: #e8e8e8;
-            opacity: 0.95;
+            color: #999;
+            opacity: 0.9;
         }
 
         main {
@@ -181,21 +216,15 @@
         @media (max-width: 768px) {
             nav {
                 position: fixed;
-                left: -250px;
+                left: -280px;
                 top: 0;
+                z-index: 100;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.5);
             }
 
             nav.active {
                 left: 0;
             }
-        }
-
-        .sidebarmini {
-            font-size: 20px;
-            padding-top: 6px;
-            line-height: 1.25;
-            color: #c9c9c9;
-            opacity: 0.95;
         }
 
         body.logged-in #header-image {
@@ -204,12 +233,12 @@
             width: auto;
         }
 
-        /* Brief "pressed" feedback for pager buttons */
         .pager-btn {
             cursor: pointer;
             user-select: none;
             -webkit-user-drag: none;
             transition: filter 0.08s ease;
+            touch-action: manipulation;
         }
         .pager-btn.pressed {
             filter: brightness(0.6);
@@ -261,39 +290,222 @@
             display: block;
         }
 
-        .terminal-shortcuts {
-            margin: 10px auto 0 auto;
-            width: 720px;
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-            flex-wrap: wrap;
+        #login {
+            padding-top: 15px;
         }
 
-        .term-btn {
-            background: #444;
-            color: #00ff00;
+        #login input {
+            padding: 10px 15px;
+            font-size: 16px;
             border: 1px solid #555;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-family: 'Steelfish', sans-serif;
-            font-size: 18px;
             border-radius: 4px;
-            min-width: 50px;
-            user-select: none;
+            background: #222;
+            color: white;
+        }
+
+        #login button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #login button:hover {
+            background: #3498db;
+        }
+
+        #login_error {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        /* Prevent zoom on buttons and links */
+        button, a, input {
             touch-action: manipulation;
         }
 
-        .term-btn:hover {
-            background: #555;
+        .nav-divider {
+            height: 1px;
+            background: #404040;
+            margin: 10px 20px;
         }
 
-        .term-btn:active {
+        /* Shell Overlay Styles */
+        #shellOverlay {
+            position: fixed;
+            inset: 0;
+            background: #1a1a1a;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        #shellOverlay.active {
+            display: flex;
+        }
+
+        .shell-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background-color: #252525;
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        .shell-header-title {
+            font-size: 24px;
+            color: #00ff00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shell-close-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Steelfish', sans-serif;
+            font-size: 20px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .shell-close-btn:hover {
+            background: #e74c3c;
+        }
+
+        .shell-terminal-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding: 10px;
+        }
+
+        #shellTerminal {
+            flex: 1;
+            min-height: 0;
+            border: 1px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .shell-shortcut-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 0;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .shell-term-btn {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #444;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-family: 'Steelfish', sans-serif;
+            font-size: 16px;
+            border-radius: 6px;
+            min-width: 60px;
+            user-select: none;
+            touch-action: manipulation;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .shell-term-btn:hover {
+            background: #444;
+        }
+
+        .shell-term-btn:active {
             background: #222;
+            transform: scale(0.95);
+        }
+
+        .shell-term-btn.danger {
+            color: #ff6b6b;
+            border-color: #ff6b6b33;
+        }
+
+        .shell-term-btn.clear {
+            color: #ffd93d;
+            border-color: #ffd93d33;
+        }
+
+        .shell-connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .shell-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .shell-status-dot.connected {
+            background: #00ff00;
+            box-shadow: 0 0 6px #00ff00;
+        }
+
+        .shell-status-dot.disconnected {
+            background: #ff4444;
+        }
+
+        .shell-status-dot.connecting {
+            background: #ffaa00;
+            animation: pulse 1s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .shell-header {
+                padding: 8px 10px;
+            }
+
+            .shell-header-title {
+                font-size: 18px;
+            }
+
+            .shell-close-btn {
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+
+            .shell-close-btn span.text {
+                display: none;
+            }
+
+            .shell-shortcut-bar {
+                gap: 4px;
+                padding: 8px 0;
+            }
+
+            .shell-term-btn {
+                padding: 10px 12px;
+                font-size: 14px;
+                min-width: 50px;
+            }
+
+            .shell-terminal-container {
+                padding: 5px;
+            }
         }
     </style>
-
-    <!-- xterm.js -->
     <link rel="stylesheet" href="xterm.css" />
     <script src="xterm.js"></script>
 </head>
@@ -311,45 +523,82 @@
     <nav hidden id="sidebarnav" class="min">
         <div style="display: flex; flex-direction: column; flex-flow: column nowrap; height: 100%;">
             <ul>
-                <li><a href="https://docs.hak5.org/wifi-pineapple-pager/" target="_blank"><i class="material-icons">auto_stories</i><div class="sidebarsub">WiFi Pineapple Pager Manual</div></a></li>
-
-                <li><a href="/api/files/zip/root/loot/handshakes"><i class="material-icons">handshake</i><div class="sidebarsub">Download Handshakes
-                            <div class="sidebarmini">Download collected WPA and WPA2 handshakes as a zip</div>
-                        </div></a>
+                <!-- External Links - Red -->
+                <li>
+                    <a href="https://docs.hak5.org/wifi-pineapple-pager/" target="_blank" class="external">
+                        <i class="material-icons">auto_stories</i>
+                        <div class="sidebarsub">WiFi Pineapple Pager Manual
+                            <div class="sidebarmini">Opens in new tab</div>
+                        </div>
+                    </a>
                 </li>
 
-                <li><a href="/api/loot/zip"><i class="material-icons">download</i><div class="sidebarsub">Download Loot
-                            <div class="sidebarmini">Download your entire loot collection as a zip</div>
-                        </div></a>
+                <li><div class="nav-divider"></div></li>
+
+                <!-- Download Links - Green -->
+                <li>
+                    <a href="/api/files/zip/root/loot/handshakes" class="download">
+                        <i class="material-icons">handshake</i>
+                        <div class="sidebarsub">Download Handshakes
+                            <div class="sidebarmini">WPA/WPA2 handshakes as zip</div>
+                        </div>
+                    </a>
                 </li>
 
                 <li>
-                    <a href="#" onclick="archiveLoot(); return false;">
+                    <a href="/api/loot/zip" class="download">
+                        <i class="material-icons">download</i>
+                        <div class="sidebarsub">Download Loot
+                            <div class="sidebarmini">Entire loot collection as zip</div>
+                        </div>
+                    </a>
+                </li>
+
+                <li><div class="nav-divider"></div></li>
+
+                <!-- Action Links - Blue -->
+                <li>
+                    <a href="#" onclick="archiveLoot(); return false;" class="action">
                         <i class="material-icons">archive</i>
                         <div class="sidebarsub">Archive Loot
-                            <div class="sidebarmini">Move your loot to /root/loot/archive/</div>
+                            <div class="sidebarmini">Move loot to /root/loot/archive/</div>
+                        </div>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="openShell(); return false;" class="action">
+                        <i class="material-icons">terminal</i>
+                        <div class="sidebarsub">SSH Shell
+                            <div class="sidebarmini">Full-screen terminal access</div>
                         </div>
                     </a>
                 </li>
             </ul>
+
             <div style="flex: 1;"></div>
+
             <ul>
-                <li><a href="#" onclick="logout()"><i class="material-icons">logout</i><div class="sidebarsub">Log Out</div></a></li>
+                <li>
+                    <a href="#" onclick="logout(); return false;" class="logout">
+                        <i class="material-icons">logout</i>
+                        <div class="sidebarsub">Log Out</div>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
 
     <main>
 
-    <center style="margin-bottom: 200px">
+    <center style="margin-bottom: 50px">
     <br>
 
     <img id="header-image" src="images/virtualpagertitle.png" style="display: block; margin: 0 auto;">
 
-    <div hidden id="login" style="margin-left:-50px; padding-top: 15px">
+    <div hidden id="login">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" minlength="8" required />
-        <span style="border-left: 1px solid white; height:10px; padding-left: 3px; padding-right: 3px;"></span>
         <button id="loginbutton">Login</button>
         <div id="login_error"></div>
     </div>
@@ -368,9 +617,7 @@
                 <img src="images/virtual_pager_02.png" width="132" height="324" alt="">
             </td>
             <td colspan="9">
-                <!-- IMPORTANT: this is the live screen surface -->
                 <img id="pager" width="480" height="222" tabindex="0">
-                <!-- hidden canvas used to convert RGBA framebuffer -> PNG -->
                 <canvas id="pager_canvas" width="480" height="222" style="display:none;"></canvas>
                 <div hidden id="pager_error">
                     Lost connection to virtual pager
@@ -481,66 +728,22 @@
             </td>
         </tr>
         <tr>
-            <td>
-                <img src="images/spacer.gif" width="73" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="59" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="56" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="22" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="115" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="35" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="87" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="7" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="139" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="9" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="10" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="76" height="1" alt="">
-            </td>
-            <td>
-                <img src="images/spacer.gif" width="56" height="1" alt="">
-            </td>
+            <td><img src="images/spacer.gif" width="73" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="59" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="56" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="22" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="115" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="35" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="87" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="7" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="139" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="9" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="10" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="76" height="1" alt=""></td>
+            <td><img src="images/spacer.gif" width="56" height="1" alt=""></td>
             <td></td>
         </tr>
     </table>
-
-    <!-- xterm.js -->
-    <div hidden id="terminalblock">
-        <div class="terminal-shortcuts">
-            <button class="term-btn" onclick="sendTermKey('\t')">TAB</button>
-            <button class="term-btn" onclick="sendTermKey('\x1b[A')">UP</button>
-            <button class="term-btn" onclick="sendTermKey('\x1b[B')">DOWN</button>
-            <button class="term-btn" onclick="sendTermKey('\x1b[D')">LEFT</button>
-            <button class="term-btn" onclick="sendTermKey('\x1b[C')">RIGHT</button>
-            <button class="term-btn" onclick="sendTermKey('\x1b')">ESC</button>
-            <button class="term-btn" onclick="sendTermKey('\x03')">CTRL+C</button>
-            <button class="term-btn" onclick="sendTermKey('\x0c')">CLEAR</button>
-        </div>
-        <div id="terminal-wrapper">
-            <div id="terminal"></div>
-        </div>
-        <p>(Click the shell area above to focus it, then type. When not focused, keys control the Pager.)</p>
-    </div>
 
     <div id="loading">
         Loading virtual pager...<br>
@@ -548,18 +751,60 @@
     </div>
 
 </center>
-	</main>
+    </main>
+
+<!-- Shell Overlay -->
+<div id="shellOverlay">
+    <div class="shell-header">
+        <div class="shell-header-title">
+            <i class="material-icons">terminal</i>
+            <span>SSH Shell</span>
+        </div>
+        <div class="shell-connection-status">
+            <div id="shell-status-dot" class="shell-status-dot"></div>
+            <span id="shell-status-text"></span>
+        </div>
+        <button class="shell-close-btn" onclick="closeShell()">
+            <i class="material-icons">close</i>
+            <span class="text">Close</span>
+        </button>
+    </div>
+
+    <div class="shell-terminal-container">
+        <div class="shell-shortcut-bar">
+            <button class="shell-term-btn" data-shell-key="&#9;">TAB</button>
+            <button class="shell-term-btn" data-shell-key="&#27;[A">↑</button>
+            <button class="shell-term-btn" data-shell-key="&#27;[B">↓</button>
+            <button class="shell-term-btn" data-shell-key="&#27;[D">←</button>
+            <button class="shell-term-btn" data-shell-key="&#27;[C">→</button>
+            <button class="shell-term-btn" data-shell-key="&#27;">ESC</button>
+            <button class="shell-term-btn danger" data-shell-key="&#3;">CTRL+C</button>
+            <button class="shell-term-btn" data-shell-key="&#4;">CTRL+D</button>
+            <button class="shell-term-btn clear" data-shell-key="&#12;">CLEAR</button>
+        </div>
+
+        <div id="shellTerminal"></div>
+
+        <div class="shell-shortcut-bar">
+            <button class="shell-term-btn" data-shell-key="|">|</button>
+            <button class="shell-term-btn" data-shell-key="&">&amp;</button>
+            <button class="shell-term-btn" data-shell-key=";">;</button>
+            <button class="shell-term-btn" data-shell-key="/">/</button>
+            <button class="shell-term-btn" data-shell-key="~">~</button>
+            <button class="shell-term-btn" data-shell-key="-">-</button>
+            <button class="shell-term-btn" data-shell-key="_">_</button>
+            <button class="shell-term-btn" data-shell-key="*">*</button>
+        </div>
+    </div>
+</div>
 
 <script>
     let login_ok = false;
-    let keyws, screenws, shellws;
+    let keyws, screenws;
     let server_id = '';
 
-    // Visible screen size (matches your pager)
     const SCREEN_WIDTH = 480;
     const SCREEN_HEIGHT = 222;
-
-    // Stride in BYTES between vertically adjacent pixels in Go's image.RGBA.
     const FB_STRIDE = SCREEN_WIDTH * 4;
 
     let loggedFrameInfo = false;
@@ -570,9 +815,29 @@
         if (window.innerWidth <= 768) {
             sidenav.classList.remove("min");
             sidenav.classList.toggle("active");
+            
+            // Add click-outside-to-close on mobile
+            if (sidenav.classList.contains("active")) {
+                setTimeout(() => {
+                    document.addEventListener("click", closeSidenavOnClickOutside);
+                }, 10);
+            } else {
+                document.removeEventListener("click", closeSidenavOnClickOutside);
+            }
         } else {
             sidenav.classList.remove("active");
             sidenav.classList.toggle("min");
+        }
+    }
+
+    function closeSidenavOnClickOutside(e) {
+        const sidenav = document.querySelector("#sidebarnav");
+        const toggleBtn = document.querySelector("#sidebarbutton");
+        
+        // Check if click is outside sidebar and not on toggle button
+        if (sidenav && !sidenav.contains(e.target) && !toggleBtn.contains(e.target)) {
+            sidenav.classList.remove("active");
+            document.removeEventListener("click", closeSidenavOnClickOutside);
         }
     }
 
@@ -598,33 +863,28 @@
         }
 
         const imageData = ctx.createImageData(SCREEN_WIDTH, SCREEN_HEIGHT);
-        const dst = imageData.data; // RGBA
+        const dst = imageData.data;
 
         let di = 0;
         for (let y = 0; y < SCREEN_HEIGHT; y++) {
             const rowStart = y * FB_STRIDE;
             for (let x = 0; x < SCREEN_WIDTH; x++) {
-                const si = rowStart + x * 4; // 4 bytes per pixel: R,G,B,A
-                dst[di    ] = bytes[si    ]; // R
-                dst[di + 1] = bytes[si + 1]; // G
-                dst[di + 2] = bytes[si + 2]; // B
-                dst[di + 3] = bytes[si + 3]; // A
+                const si = rowStart + x * 4;
+                dst[di    ] = bytes[si    ];
+                dst[di + 1] = bytes[si + 1];
+                dst[di + 2] = bytes[si + 2];
+                dst[di + 3] = bytes[si + 3];
                 di += 4;
             }
         }
 
         ctx.putImageData(imageData, 0, 0);
-
         pager.src = canvas.toDataURL("image/png");
     }
 
     function connect() {
-        const pager = document.getElementById('pager')
-        const pagererr = document.getElementById('pager_error')
-
-        if (!pager) {
-            console.error("pager <img> not found in DOM");
-        }
+        const pager = document.getElementById('pager');
+        const pagererr = document.getElementById('pager_error');
 
         keyws = new WebSocket(`ws://${window.location.host}/api/pager/input/keys.ws`);
 
@@ -632,141 +892,75 @@
         screenws.binaryType = "arraybuffer";
 
         screenws.onopen = () => {
-            pager.style.display = 'block'
-            pagererr.hidden = true
-        }
+            pager.style.display = 'block';
+            pagererr.hidden = true;
+        };
 
         screenws.onmessage = (event) => {
             if (!pager) return;
-            const buffer = event.data;          // ArrayBuffer
-            const bytes = new Uint8Array(buffer); // Raw RGBA Pix from Go
+            const buffer = event.data;
+            const bytes = new Uint8Array(buffer);
             renderRGBAFrame(bytes);
         };
 
         screenws.onerror = () => {
-            pager.style.display = 'none'
-            pagererr.hidden = false
-        }
-
-        shellws = new WebSocket(`ws://${window.location.host}${SHELL_WS_PATH}`);
-
-        shellws.onopen = () => {
-            term.write("[connected to shell]\r\n");
-        };
-
-        shellws.onmessage = (event) => {
-            if (typeof event.data === 'string') {
-                term.write(event.data);
-            } else if (event.data instanceof ArrayBuffer) {
-                const data = new Uint8Array(event.data);
-                term.write(data);
-            } else if (event.data instanceof Blob) {
-                event.data.arrayBuffer().then((buf) => {
-                    const data = new Uint8Array(buf);
-                    term.write(data);
-                });
-            }
-        };
-
-        shellws.onclose = () => {
-            term.write("\r\n[disconnected from shell]\r\n");
-        };
-
-        shellws.onerror = () => {
-            term.write("\r\n[error connecting to shell]\r\n");
+            pager.style.display = 'none';
+            pagererr.hidden = false;
         };
     }
 
     function close() {
-        if (keyws !== null) {
-            keyws.onclose = function () { };
+        if (keyws) {
+            keyws.onclose = function () {};
             keyws.close();
         }
-
-        if (shellws !== null) {
-            shellws.onclose = function () { };
-            shellws.close();
-        }
-
-        if (screenws !== null) {
-            screenws.onclose = function () { };
+        if (screenws) {
+            screenws.onclose = function () {};
             screenws.close();
         }
     }
 
-    function sendTermKey(data) {
-        if (shellws && shellws.readyState === WebSocket.OPEN) {
-            shellws.send(data);
-            // Only focus if we're not on a touch device to avoid zooming
-            if (!('ontouchstart' in window)) {
-                term.focus();
-            }
-        }
-    }
-
     function check_login() {
-        const xhr = new XMLHttpRequest()
+        const xhr = new XMLHttpRequest();
         xhr.onload = () => {
-            const sidebarbutton = document.getElementById("sidebarbutton")
-            const sidebarnav = document.getElementById("sidebarnav")
-            const loadingdiv = document.getElementById("loading")
-            const logindiv = document.getElementById("login")
-            const pagerdiv = document.getElementById("pager_ui")
-            const termdiv = document.getElementById("terminalblock")
+            const sidebarbutton = document.getElementById("sidebarbutton");
+            const sidebarnav = document.getElementById("sidebarnav");
+            const loadingdiv = document.getElementById("loading");
+            const logindiv = document.getElementById("login");
+            const pagerdiv = document.getElementById("pager_ui");
 
-            loadingdiv.hidden = true
+            loadingdiv.hidden = true;
 
             if (xhr.status >= 200 && xhr.status < 300) {
-                const response = JSON.parse(xhr.responseText)
-                server_id = response["serverid"]
+                const response = JSON.parse(xhr.responseText);
+                server_id = response["serverid"];
 
-                    if (!login_ok) {
-                        logindiv.hidden = true
-                        pagerdiv.hidden = false
-                        termdiv.hidden = false
-                        sidebarbutton.hidden = false
-                        sidebarnav.hidden = false
+                if (!login_ok) {
+                    logindiv.hidden = true;
+                    pagerdiv.hidden = false;
+                    sidebarbutton.hidden = false;
+                    sidebarnav.hidden = false;
+                    document.body.classList.add("logged-in");
+                    connect();
+                    login_ok = true;
+                }
+            } else {
+                logindiv.hidden = false;
 
-                        document.body.classList.add("logged-in")
-
-                        connect()
-
-                        login_ok = true
-                    }
-                } else {
-                    logindiv.hidden = false
-
-                    if (login_ok) {
-                        pagerdiv.hidden = true
-                        termdiv.hidden = true
-                        sidebarbutton.hidden = true
-                        sidebarnav.hidden = true
-
-                        document.body.classList.remove("logged-in")
-
-                        login_ok = false
-                        close()
-                    }
+                if (login_ok) {
+                    pagerdiv.hidden = true;
+                    sidebarbutton.hidden = true;
+                    sidebarnav.hidden = true;
+                    document.body.classList.remove("logged-in");
+                    login_ok = false;
+                    close();
                 }
             }
+        };
 
-        xhr.open('GET', '/api/api_ping')
-        xhr.send()
+        xhr.open('GET', '/api/api_ping');
+        xhr.send();
     }
-
-    const SHELL_WS_PATH = "/api/terminal/openWs";
-
-    const term = new Terminal({
-        cols: 80,
-        rows: 24,
-        convertEol: true,
-        cursorBlink: true,
-        scrollback: 1000,
-        theme: {
-            background: "#000000",
-            foreground: "#00ff00",
-        },
-    });
 
     function showArchiveOverlay(show) {
         const el = document.getElementById("archiveOverlay");
@@ -786,21 +980,16 @@
     async function archiveLoot() {
         try {
             showArchiveOverlay(true);
-
             const res = await fetch("/api/loot/archive", {
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
-
             showArchiveOverlay(false);
 
             if (!res.ok || res.status !== 200) {
                 showArchiveToast(`Archive failed (${res.status})`);
                 return;
             }
-
             showArchiveToast("Loot has been archived!");
         } catch (e) {
             showArchiveOverlay(false);
@@ -809,61 +998,51 @@
     }
 
     function logout() {
-        document.cookie = `AUTH_${server_id}=dead;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`
-        check_login()
+        document.cookie = `AUTH_${server_id}=dead;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+        check_login();
     }
 
     function login() {
-        const xhr = new XMLHttpRequest()
-        const pw = document.getElementById('password')
-        const err = document.getElementById('login_error')
+        const xhr = new XMLHttpRequest();
+        const pw = document.getElementById('password');
+        const err = document.getElementById('login_error');
 
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
-                const response = JSON.parse(xhr.responseText)
-                const decoded = JSON.parse(atob(response['token'].split('.')[0]))
-                document.cookie = `AUTH_${decoded.ServerId}=${response['token']};path=/;samesite=strict;max-age=${60*60*12}`
-                serverid = decoded.ServerId
-                check_login()
-            } else if (xhr.status == 401) {
-                err.innerHTML = '<p>Login failed (incorrect password)</p>'
+                const response = JSON.parse(xhr.responseText);
+                const decoded = JSON.parse(atob(response['token'].split('.')[0]));
+                document.cookie = `AUTH_${decoded.ServerId}=${response['token']};path=/;samesite=strict;max-age=${60*60*12}`;
+                server_id = decoded.ServerId;
+                check_login();
+            } else if (xhr.status === 401) {
+                err.innerHTML = '<p>Login failed (incorrect password)</p>';
             } else {
-                err.innerHTML = `<p>Error logging in (${xhr.status}).  Make sure you are connected to the WiFi Pineapple Pager over USB or the management network and that the Virtual Pager is enabled in the Settings &gt; System panel.`
+                err.innerHTML = `<p>Error logging in (${xhr.status})</p>`;
             }
-        }
+        };
 
         xhr.ontimeout = () => {
-            err.innerHTML = `<p>Error logging in (connection timed out).  Make sure you are connected to the WiFi Pineapple Pager over USB or the management network and that the Virtual Pager is enabled in the Settings &gt; System panel.`
-        }
+            err.innerHTML = '<p>Connection timed out</p>';
+        };
 
-        const json = {
-            "username": "root",
-            "password": pw.value
-        }
-
-        xhr.open('POST', '/api/login')
-        xhr.timeout = 2000
-        xhr.setRequestHeader('Content-Type', 'application/json')
-        xhr.send(JSON.stringify(json))
+        xhr.open('POST', '/api/login');
+        xhr.timeout = 5000;
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({ username: "root", password: pw.value }));
     }
 
     (function init() {
         const terminationEvent = 'onpagehide' in self ? 'pagehide' : 'unload';
         window.addEventListener(terminationEvent, (event) => {
             if (event.persisted === false) {
-                close()
+                close();
             }
         });
 
-        // Handle coming back from background (mobile)
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'visible' && login_ok) {
-                // Check if sockets are closed and trigger reconnect if needed
                 const screenClosed = !screenws || screenws.readyState === WebSocket.CLOSED;
-                const shellClosed = !shellws || shellws.readyState === WebSocket.CLOSED;
-                
-                if (screenClosed || shellClosed) {
-                    console.log("Visibility restored, reconnecting...");
+                if (screenClosed) {
                     connect();
                 }
             }
@@ -871,58 +1050,30 @@
 
         check_login();
 
-        const loginbutton = document.getElementById("loginbutton")
-        loginbutton.onclick = () => { login() }
+        document.getElementById("loginbutton").onclick = login;
+        document.getElementById("password").onkeyup = (e) => {
+            if (e.key === 'Enter') login();
+        };
 
-        const pw = document.getElementById("password")
-        pw.onkeyup = (e) => {
-            if (e.key === 'Enter' || e.keyCore === 13) { login() }
-        }
+        document.getElementById("screen_retry").onclick = connect;
 
-        const retrybutton = document.getElementById("screen_retry")
-        retrybutton.onclick = () => {
-            connect_screen()
-        }
-
-        const termContainer = document.getElementById("terminal");
-
-        if (!termContainer) {
-            console.error("terminal container not found in DOM");
-        }
-
-        term.open(termContainer);
-        term.focus();
-        termContainer.addEventListener("click", () => term.focus());
-
-        // Focus pager when clicked so it can receive keyboard input
         const pagerEl = document.getElementById("pager");
         if (pagerEl) {
             pagerEl.addEventListener("click", () => pagerEl.focus());
         }
-
-        // Keyboard to shell; xterm handles key events when focused
-        term.onData((data) => {
-            if (shellws && shellws.readyState === WebSocket.OPEN) {
-                // Send as text; your Go handler already accepts TextMessage
-                shellws.send(data);
-            }
-        });
 
         const SCROLL_KEYS = new Set([
             "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
             " ", "Spacebar", "PageUp", "PageDown", "Home", "End"
         ]);
 
-        // Global key handling - send to pager only when pager (or body) is focused
         document.addEventListener("keydown", (e) => {
             const active = document.activeElement;
             const pagerFocused = (pagerEl && active === pagerEl);
             const bodyFocused = (active === document.body);
 
-            // If xterm (or any other control) is focused, do nothing here.
             if (!pagerFocused && !bodyFocused) return;
 
-            // Prevent page scrolling when controlling the pager
             if (SCROLL_KEYS.has(e.key)) {
                 e.preventDefault();
             }
@@ -932,7 +1083,6 @@
             }
         }, { capture: true });
 
-        // Click/tap feedback: darken for 0.1s
         const PRESS_MS = 120;
         document.querySelectorAll(".pager-btn").forEach((el) => {
             const press = () => {
@@ -943,6 +1093,208 @@
             el.addEventListener("click", press);
         });
     })();
+
+    // Shell functionality
+    let shellws = null;
+    let shellTerm = null;
+
+    function updateShellStatus(status) {
+        const dot = document.getElementById('shell-status-dot');
+        const text = document.getElementById('shell-status-text');
+        
+        if (!dot || !text) return;
+        
+        dot.className = 'shell-status-dot ' + status;
+        
+        switch(status) {
+            case 'connected':
+                text.textContent = 'Connected';
+                break;
+            case 'disconnected':
+                text.textContent = 'Disconnected';
+                break;
+            case 'connecting':
+                text.textContent = 'Connecting...';
+                break;
+        }
+    }
+
+    function connectShellWS() {
+        updateShellStatus('connecting');
+
+        shellws = new WebSocket(`ws://${window.location.host}/api/terminal/openWs`);
+
+        shellws.onopen = () => {
+            updateShellStatus('connected');
+            if (shellTerm) {
+                shellTerm.write("\x1b[32m[Connected to shell]\x1b[0m\r\n");
+                shellTerm.focus();
+            }
+        };
+
+        shellws.onmessage = (event) => {
+            if (!shellTerm) return;
+            
+            if (typeof event.data === 'string') {
+                shellTerm.write(event.data);
+            } else if (event.data instanceof ArrayBuffer) {
+                shellTerm.write(new Uint8Array(event.data));
+            } else if (event.data instanceof Blob) {
+                event.data.arrayBuffer().then((buf) => {
+                    shellTerm.write(new Uint8Array(buf));
+                });
+            }
+        };
+
+        shellws.onclose = () => {
+            updateShellStatus('disconnected');
+            if (shellTerm) {
+                shellTerm.write("\r\n\x1b[31m[Disconnected from shell]\x1b[0m\r\n");
+            }
+            
+            // Auto-reconnect if overlay is still open
+            setTimeout(() => {
+                const overlay = document.getElementById('shellOverlay');
+                if (overlay && overlay.classList.contains('active')) {
+                    if (shellTerm) {
+                        shellTerm.write("\x1b[33m[Attempting to reconnect...]\x1b[0m\r\n");
+                    }
+                    connectShellWS();
+                }
+            }, 3000);
+        };
+
+        shellws.onerror = () => {
+            updateShellStatus('disconnected');
+            if (shellTerm) {
+                shellTerm.write("\r\n\x1b[31m[Connection error]\x1b[0m\r\n");
+            }
+        };
+    }
+
+    function sendShellKey(key) {
+        if (shellws && shellws.readyState === WebSocket.OPEN) {
+            shellws.send(key);
+        }
+    }
+
+    function openShell() {
+        const overlay = document.getElementById('shellOverlay');
+        if (!overlay) {
+            console.error('Shell overlay not found');
+            return;
+        }
+
+        // Show overlay immediately
+        overlay.classList.add('active');
+        
+        // Initialize terminal if not already done
+        if (!shellTerm) {
+            const container = document.getElementById('shellTerminal');
+            
+            // Check if Terminal is available
+            if (typeof Terminal === 'undefined') {
+                console.error('xterm.js not loaded');
+                updateShellStatus('disconnected');
+                const statusText = document.getElementById('shell-status-text');
+                if (statusText) statusText.textContent = 'Error: Terminal library not loaded';
+                return;
+            }
+
+            try {
+                shellTerm = new Terminal({
+                    cursorBlink: true,
+                    scrollback: 5000,
+                    fontSize: 14,
+                    fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+                    theme: {
+                        background: "#0a0a0a",
+                        foreground: "#00ff00",
+                        cursor: "#00ff00",
+                        cursorAccent: "#000000",
+                    },
+                });
+
+                shellTerm.open(container);
+            } catch (e) {
+                console.error('Failed to initialize terminal:', e);
+                updateShellStatus('disconnected');
+                const statusText = document.getElementById('shell-status-text');
+                if (statusText) statusText.textContent = 'Error: ' + e.message;
+                return;
+            }
+            
+            // Fit terminal to container
+            function fitShellTerminal() {
+                if (!shellTerm || !shellTerm._core || !shellTerm._core._renderService) return;
+                
+                const containerRect = container.getBoundingClientRect();
+                const cellWidth = shellTerm._core._renderService.dimensions.css.cell.width;
+                const cellHeight = shellTerm._core._renderService.dimensions.css.cell.height;
+                
+                if (cellWidth && cellHeight) {
+                    const cols = Math.floor(containerRect.width / cellWidth);
+                    const rows = Math.floor(containerRect.height / cellHeight);
+                    if (cols > 0 && rows > 0) {
+                        shellTerm.resize(cols, rows);
+                    }
+                }
+            }
+
+            // Initial fit
+            setTimeout(fitShellTerminal, 100);
+            
+            // Resize on window resize
+            window.addEventListener('resize', () => {
+                if (overlay.classList.contains('active')) {
+                    setTimeout(fitShellTerminal, 50);
+                }
+            });
+
+            // Send typed data to shell
+            shellTerm.onData((data) => {
+                sendShellKey(data);
+            });
+
+            // Focus terminal on click
+            container.addEventListener('click', () => {
+                if (shellTerm) shellTerm.focus();
+            });
+
+            // Setup shortcut buttons
+            document.querySelectorAll('.shell-term-btn[data-shell-key]').forEach((btn) => {
+                const key = btn.dataset.shellKey;
+                
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sendShellKey(key);
+                    if (shellTerm) shellTerm.focus();
+                });
+
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    sendShellKey(key);
+                });
+            });
+        }
+
+        // Connect to shell
+        connectShellWS();
+    }
+
+    function closeShell() {
+        const overlay = document.getElementById('shellOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+        
+        // Close websocket
+        if (shellws) {
+            shellws.onclose = function () {}; // Prevent reconnect
+            shellws.close();
+            shellws = null;
+        }
+    }
 </script>
 </body>
 </html>
